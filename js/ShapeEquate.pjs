@@ -22,18 +22,55 @@ var hitOptions = {
     tolerance: 5
 };
 
+/**
+ * This function creates a Shape object.
+ * You must call Shape.init so it
+ * can contain a Group clustering of
+ * the shape path and text
+ */
+function Shape(/*Path*/ shapeItem, /*int*/ mass) {
 
+    this.shapeItem = shapeItem;
+    this.mass = mass;
+    this.text = null; //set during init
+    this.group = null; //set during init
+    
+    this.init = function() {
+        /*
+         * Add a text.  
+         * The text is positioned x-5, y+5
+         * unless it is the star.
+         */
+        var point = mass === 10 ? new Point(shapeItem.position.x - 7,  shapeItem.position.y) :
+            new Point(shapeItem.position.x - 5, shapeItem.position.y + 5);  
+
+        var text = new PointText(point);
+        text.fillColor = 'black';
+        text.characterStyle.fontSize = 12;
+        text.content = '' + mass;        
+        
+        this.text = text;
+        this.group = new Group(shapeItem, text);
+    } 
+    
+    this.reinit = function() {
+        if (this.text) {
+            this.text.remove();            
+        }
+        this.init();
+    }
+    
+}
 /** all the functions and member variables except for mouse and resize handlers */
 var pjs = {
-    /** bank Item */
-    bank: null,
-    /** holder of all shape Items - a shape is a path that also has a int 'mass' property and a PointText 'massPointText' property */
+    
+    /** holder of all shape objects */
     shapes: [],
-    /** current shape clone - is a shape Item that has 'mass', 'massPointText' and also boolean 'isClone' property*/
+    /** current shape object "clone" - groups cannot be cloned so properties and children are manually set */
     currClone: null,
     /** boolean - when true, remove the currClone onMouseUp, otherwise add it to my pan */
     removeClone: false,
-    /** the balance scale Items and clone 'shapes' array */
+    /** the balance scale Items and 'shapes' array. This is not a group, because the beam rotates while the pans move but do not rotate */
     balance: {shapes: []},
     /** the total PointText Item on the right pan including an int 'total' property */
     total: null,
@@ -77,18 +114,10 @@ var pjs = {
          * rectangle area for the shape bank
          */
         var point = new Point(0, 30);
-        var size = new Size(1000, 120);
+        var size = new Size(1000, 115);
         var rect = new Rectangle(point, size);
-        pjs.bank = new Path.Rectangle(rect);
-        pjs.bank.fillColor = '#EFDECD';
-    },
-    
-    addText: function(/*Item + massPointText property*/ shapeItem) {
-        var text = new PointText(new Point(shapeItem.position.x - 5, shapeItem.position.y + 5));
-        text.fillColor = 'black';
-        text.characterStyle.fontSize = 12;
-        text.content = '' + shapeItem.mass;
-        shapeItem.massPointText = text;
+        var bank = new Path.Rectangle(rect);
+        bank.fillColor = '#EFDECD';
     },
     
     createShapes: function() {
@@ -111,9 +140,7 @@ var pjs = {
          */
         var circle = new Path.Circle(new Point(50, 90), 45);
         circle.fillColor = '#FF7538';
-        circle.mass = 1;
-        pjs.addText(circle);
-        pjs.shapes[0] = circle;
+        pjs.shapes[0] = new Shape(circle, 1);
         
         /*
          * Heart
@@ -125,18 +152,14 @@ var pjs = {
         heart.arcTo(new Point(110, 80), false);
         heart.closed = true;
         heart.fillColor = '#FFAACC';
-        heart.mass = 2;
-        pjs.addText(heart);
-        pjs.shapes[1] = heart;
+        pjs.shapes[1] = new Shape(heart, 2);
         
         /*
          * Triangle
          */
         var triangle = new Path.RegularPolygon(new Point(240, 100), 3, 50);
         triangle.fillColor = '#7851A9';
-        triangle.mass = 3;
-        pjs.addText(triangle);
-        pjs.shapes[2] = triangle;
+        pjs.shapes[2] = new Shape(triangle, 3);
 
         /*
          * Square
@@ -146,9 +169,7 @@ var pjs = {
         var rect = new Rectangle(point, size);
         var square = new Path.Rectangle(rect);
         square.fillColor = '#1F75FE';
-        square.mass = 4;
-        pjs.addText(square);
-        pjs.shapes[3] = square;
+        pjs.shapes[3] = new Shape(square, 4);
         
         /*
          * House
@@ -161,9 +182,7 @@ var pjs = {
         house.add(new Point(400, 80));
         house.closed = true;
         house.fillColor = '#158078';
-        house.mass = 5;
-        pjs.addText(house);
-        pjs.shapes[4] = house;
+        pjs.shapes[4] = new Shape(house, 5);
 
         /*
          * Hour glass
@@ -177,9 +196,7 @@ var pjs = {
         hourglass.add(new Point(515, 85));
         hourglass.closed = true;
         hourglass.fillColor = '#FCD975';
-        hourglass.mass = 6;
-        pjs.addText(hourglass);
-        pjs.shapes[5] = hourglass;
+        pjs.shapes[5] = new Shape(hourglass, 6);
 
         /*
          * Arrow
@@ -194,18 +211,14 @@ var pjs = {
         arrow.add(new Point(600, 60));
         arrow.closed = true;
         arrow.fillColor = '#5D76CB';
-        arrow.mass = 7;
-        pjs.addText(arrow);
-        pjs.shapes[6] = arrow;
+        pjs.shapes[6] = new Shape(arrow, 7);
 
         /*
          * Octagon
          */
         var octagon = new Path.RegularPolygon(new Point(740, 85), 8, 50);
         octagon.fillColor = '#EE204D';
-        octagon.mass = 8;
-        pjs.addText(octagon);
-        pjs.shapes[7] = octagon;
+        pjs.shapes[7] = new Shape(octagon, 8);
 
         /*
          * Shamrock
@@ -223,19 +236,22 @@ var pjs = {
         shamrock.arcTo(new Point(830, 130));
         shamrock.closed = true;
         shamrock.fillColor = '#45CEA2';
-        shamrock.mass = 9;
-        pjs.addText(shamrock);
-        pjs.shapes[8] = shamrock;
+        pjs.shapes[8] = new Shape(shamrock, 9);
 
         /*
          * Star
          */
-        var star = new Path.Star(new Point(940, 90), 5, 25, 50);
+        var star = new Path.Star(new Point(940, 85), 5, 30, 50);
         star.rotate(36);
         star.fillColor = '#FFF44F';
-        star.mass = 10;
-        pjs.addText(star);
-        pjs.shapes[9] = star;
+        pjs.shapes[9] = new Shape(star, 10);
+        
+        /*
+         * Initialize all the shapes
+         */
+        for (var i = 0; i < pjs.shapes.length; i++) {
+            pjs.shapes[i].init();
+        }
     },
 
     createBalance: function() {
@@ -376,30 +392,27 @@ var pjs = {
         /*
          * initial offset
          */
-        var dropPositionOffset = {x: 0, y: -40};
+        var dropPositionOffset = {x: 40, y: -40};
         /*
          * Loop through all the clones and set them down
          * and move their texts
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
-            var clone = pjs.balance.shapes[i];
+            var clone = pjs.balance.shapes[i].shapeItem;
             clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y + dropPositionOffset.y;
             clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffset.x;
-
-            clone.massPointText.position.x = clone.position.x - 5;
-            clone.massPointText.position.y = clone.position.y + 5;
-
+            pjs.balance.shapes[i].reinit();
             /*
              * move the x offset over by the width of the clone
              */
             dropPositionOffset.x += clone.bounds.width;
             /*
              * if the new x offset is off the pan, decrement
-             * the y offset and reset the x to 0
+             * the y offset and reset the x 
              */
             if (dropPositionOffset.x > pjs.balance.leftPan.strokeBounds.topRight.x) {
                 dropPositionOffset.y -= 80;
-                dropPositionOffset.x = 0;       
+                dropPositionOffset.x = 40;       
             }
             
         }
@@ -422,19 +435,19 @@ var pjs = {
             var mass = pjs.balance.shapes[i].mass;
             sums[mass - 1] = sums[mass - 1] + 1;
         }
-        /*
-         * String the equation together
-         */
-        var eqPos = {x: 10, y: 200};
-        var equation = "";
         
-        var congrats = new PointText(eqPos);
+        var congrats = new PointText(new Point(10, 600));
         congrats.fillColor = 'black';
         congrats.characterStyle.fontSize = 12;
         congrats.content = 'You did it! ';
-        eqPos.x += congrats.bounds.width + 80;
         pjs.hooray.addChild(congrats);
-        
+
+        /*
+         * String the equation together
+         */
+        var eqPos = {x: 10, y: 625};
+        var equation = "";
+
         var plus;
         for (var i = 0; i < 10; i++) {
             var sum = sums[i];
@@ -448,17 +461,20 @@ var pjs = {
                 
                 eqPos.x += s.bounds.width + 50;
                 
-                var miniShape = pjs.shapes[i].clone();
-                miniShape.scale(0.25);
-                miniShape.position.x = eqPos.x;
-                miniShape.position.y = eqPos.y - 10;
+                var miniShape = pjs.shapes[i].shapeItem.clone();
+                miniShape.scale(0.33);
+                miniShape.position.x = eqPos.x + 5;
+                miniShape.position.y = eqPos.y - 7;
                 pjs.hooray.addChild(miniShape);
                 
-                eqPos.x += miniShape.bounds.width;
+                eqPos.x += miniShape.bounds.width - 5;
                 
-                var miniText = pjs.shapes[i].massPointText.clone();
-                miniText.scale(0.75);
-                miniText.position.x = miniShape.position.x - 2;
+                var miniText = pjs.shapes[i].text.clone();
+                miniText.scale(0.8);
+                miniText.position.x = miniShape.position.x - 3.5;
+                if (pjs.shapes[i].mass === 10) {
+                    miniText.position.x -= 5;
+                }
                 miniText.position.y = miniShape.position.y + 5;
                 pjs.hooray.addChild(miniText);
                 
@@ -496,8 +512,7 @@ var pjs = {
          * Clear the pan
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
-            pjs.balance.shapes[i].massPointText.remove();
-            pjs.balance.shapes[i].remove();
+            pjs.balance.shapes[i].group.remove();
         }
         pjs.balance.shapes = [];
         pjs.angleBeam();
@@ -531,38 +546,41 @@ function onMouseDown(event) {
 
 //  var hitResult = project.hitTest(event.point, hitOptions);
 	var hitResult = project.hitTest(event.point);
-	
-    if (hitResult && hitResult.item) {  
-        for (var i = 0; i < 10; i++) {
+    if (hitResult && hitResult.item) {
+        for (var i = 0; i < pjs.shapes.length; i++) {
 
-            if (pjs.shapes[i] === hitResult.item) {
+            if (pjs.shapes[i].shapeItem === hitResult.item) {
                 /*
                  * If it's a shape, clone it
                  */
-                console.log("pjs.shapes[i] === hitResult.item, so cloning...");
-                pjs.currClone = hitResult.item.clone();
-                pjs.currClone.selected = true;  
-                pjs.currClone.isClone = true;
-                pjs.currClone.mass = hitResult.item.mass;
+                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
+                pjs.currClone = new Shape(hitResult.item.clone(), pjs.shapes[i].mass);
+                pjs.currClone.init();
+                
+                pjs.currClone.shapeItem.selected = true;  
     	
                 pjs.removeClone = false;
                 return;
             }
         }
 	    
-        if (hitResult.item.isClone) {
-            console.log("isClone so marking removeClone = true");
-            pjs.currClone = hitResult.item;
-            pjs.currClone.massPointText.remove();
-            pjs.currClone.selected = true;
-            pjs.removeClone = true;
-    	}
+        for (var i = 0; i < pjs.balance.shapes.length; i++) {
+            if (pjs.balance.shapes[i].shapeItem === hitResult.item) {
+                console.log("isClone so marking removeClone = true");
+                pjs.currClone = pjs.balance.shapes[i];
+                pjs.currClone.shapeItem.selected = true;
+                
+                pjs.removeClone = true;
+                
+                return;
+            }            
+        }
 	}
 }
 
 function onMouseDrag(event) {
     if (pjs.currClone) {
-        pjs.currClone.position = event.point;
+        pjs.currClone.shapeItem.position = event.point;
     }
 }
 
@@ -582,7 +600,7 @@ function onMouseUp(event) {
                 }
             }
             pjs.balance.shapes.splice(j, 1);
-            pjs.currClone.remove();
+            pjs.currClone.group.remove();
             
             pjs.angleBeam();
             pjs.positionClonesOnPan();              
@@ -591,14 +609,13 @@ function onMouseUp(event) {
             /*
              * Drop the clone onto the pan
              */
-            pjs.addText(pjs.currClone);
             pjs.balance.shapes.push(pjs.currClone);
 
             pjs.angleBeam();            
             pjs.positionClonesOnPan();
         }
         
-        pjs.currClone.selected = false;
+        pjs.currClone.shapeItem.selected = false;
         pjs.currClone = null;            
 
     }
@@ -607,8 +624,5 @@ function onMouseUp(event) {
 function onMouseMove(event) {
 }
 
-function onResize(event) {
-    // TODO Whenever the window is resized, redraw stuff;
-}
 
 pjs.init();
