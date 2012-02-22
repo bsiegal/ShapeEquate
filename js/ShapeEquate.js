@@ -22,6 +22,12 @@
  * be accessible by standard JavaScript
  */
 var ShapeEquate = {
+    canvasFocus: function() {
+//        var context = document.getElementById('ShapeEquateCanvas').getContext("2d");
+//        console.log("context = ");
+//        console.log(context);
+//        context.restore();
+    }
     
 };
 

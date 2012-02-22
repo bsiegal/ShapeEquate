@@ -39,7 +39,7 @@ var pjs = {
     total: null,
     /** current beam rotation */
     currRotation: 0,
-    /** group of PointText and miniShapes and miniTexts to show the hooray message and equation */
+    /** group of PointText, miniShapes, miniTexts and buttons to show the hooray message and equation */
     hooray: null,
 
     init: function() {
@@ -47,42 +47,24 @@ var pjs = {
          * Define this scope so ShapeEquate will have
          * functions that can be accessed directly from javascript
          */
-         PaperScope.each(function(/*PaperScope*/ scope) {
-             if (scope.project) {
-                 ShapeEquate.clearPan = function() {
-                     console.log("clear pan hooray = " + pjs.hooray);
-                     /*
-                      * Clear the pan
-                      */
-                     for (var i = 0; i < pjs.balance.shapes.length; i++) {
-                         pjs.balance.shapes[i].massPointText.remove();
-                         pjs.balance.shapes[i].remove();
-                     }
-                     pjs.balance.shapes = [];
-                     pjs.angleBeam();
-                     /*
-                      * Remove the hooray group
-                      */
-                     if (pjs.hooray) {
-                         pjs.hooray.remove();
-                     }
-                 };
-                 
-                 ShapeEquate.newTotal = function() {
-                     /*
-                      * Reset the total, then call
-                      * clearPan
-                      */
-                     if (pjs.total) {
-                         pjs.total.remove();
-                         pjs.createTotal();
-                     }
-                     ShapeEquate.clearPan();
-                 }
-                 
-             }
-         });
-     
+        PaperScope.each(function(/*PaperScope*/ scope) {
+            if (scope.project) {
+                ShapeEquate.clearPan = function() {
+                    
+                    pjs.clearPan();
+                    
+                    ShapeEquate.canvasFocus();
+                };
+
+                ShapeEquate.newTotal = function() {
+                    
+                    pjs.newTotal();
+                    
+                    ShapeEquate.clearPan();
+                }
+
+            }
+        });
         pjs.createShapeBank();
         pjs.createShapes();
         pjs.createBalance();
@@ -261,10 +243,10 @@ var pjs = {
          * fulcrum
          */
         var fulcrum = new Path();
-        fulcrum.add(new Point(400, 670));
-        fulcrum.add(new Point(600, 670));
-        fulcrum.arcTo(new Point(550, 600), new Point(500, 500));
-        fulcrum.arcTo(new Point(450, 600), new Point(400, 670));
+        fulcrum.add(new Point(430, 670));
+        fulcrum.add(new Point(570, 670));
+        fulcrum.arcTo(new Point(525, 600), new Point(500, 500));
+        fulcrum.arcTo(new Point(475, 600), new Point(430, 670));
         fulcrum.fillColor = '#CD9575';
         
         /*
@@ -390,7 +372,47 @@ var pjs = {
         pjs.total.position.y = pjs.balance.rightPan.position.y - 5;
     },
     
+    positionClonesOnPan: function() {
+        /*
+         * initial offset
+         */
+        var dropPositionOffset = {x: 0, y: -40};
+        /*
+         * Loop through all the clones and set them down
+         * and move their texts
+         */
+        for (var i = 0; i < pjs.balance.shapes.length; i++) {
+            var clone = pjs.balance.shapes[i];
+            clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y + dropPositionOffset.y;
+            clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffset.x;
+
+            clone.massPointText.position.x = clone.position.x - 5;
+            clone.massPointText.position.y = clone.position.y + 5;
+
+            /*
+             * move the x offset over by the width of the clone
+             */
+            dropPositionOffset.x += clone.bounds.width;
+            /*
+             * if the new x offset is off the pan, decrement
+             * the y offset and reset the x to 0
+             */
+            if (dropPositionOffset.x > pjs.balance.leftPan.strokeBounds.topRight.x) {
+                dropPositionOffset.y -= 80;
+                dropPositionOffset.x = 0;       
+            }
+            
+        }
+    },
+    
     showHooray: function() {
+        /*
+         * Remove any existing hooray group
+         */
+        if (pjs.hooray) {
+            pjs.hooray.remove();
+        }
+        
         pjs.hooray = new Group();
         /*
          * Create an array of sums for each shape
@@ -403,14 +425,14 @@ var pjs = {
         /*
          * String the equation together
          */
-        var eqPos = {x: 40, y: 200};
+        var eqPos = {x: 10, y: 200};
         var equation = "";
         
         var congrats = new PointText(eqPos);
         congrats.fillColor = 'black';
         congrats.characterStyle.fontSize = 12;
         congrats.content = 'You did it! ';
-        eqPos.x += congrats.bounds.width + 100;
+        eqPos.x += congrats.bounds.width + 80;
         pjs.hooray.addChild(congrats);
         
         var plus;
@@ -465,39 +487,40 @@ var pjs = {
         tot.characterStyle.fontSize = 12;
         tot.content = ' = ' + pjs.total.total;
         pjs.hooray.addChild(tot);
+        
     },
     
-    positionClonesOnPan: function() {
+    clearPan: function() {
+        console.log("clear pan hooray = " + pjs.hooray);
         /*
-         * initial offset
-         */
-        var dropPositionOffset = {x: 0, y: -20};
-        /*
-         * Loop through all the clones and set them down
-         * and move their texts
+         * Clear the pan
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
-            var clone = pjs.balance.shapes[i];
-            clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y + dropPositionOffset.y;
-            clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffset.x;
-
-            clone.massPointText.position.x = clone.position.x - 5;
-            clone.massPointText.position.y = clone.position.y + 5;
-
-            /*
-             * move the x offset over by the width of the clone
-             */
-            dropPositionOffset.x += clone.bounds.width;
-            /*
-             * if the new x offset is off the pan, decrement
-             * the y offset and reset the x to 0
-             */
-            if (dropPositionOffset.x > pjs.balance.leftPan.strokeBounds.topRight.x) {
-                dropPositionOffset.y -= 80;
-                dropPositionOffset.x = 0;       
-            }
-            
+            pjs.balance.shapes[i].massPointText.remove();
+            pjs.balance.shapes[i].remove();
         }
+        pjs.balance.shapes = [];
+        pjs.angleBeam();
+        /*
+         * Remove the hooray group
+         */
+        if (pjs.hooray) {
+            pjs.hooray.remove();
+        }
+
+    },
+    
+    newTotal: function() {
+        /*
+         * Reset the total, then call
+         * clearPan
+         */
+        if (pjs.total) {
+            pjs.total.remove();
+            pjs.createTotal();
+        }
+
+        pjs.clearPan();
     }
 
 };
@@ -548,7 +571,7 @@ function onMouseUp(event) {
         if (pjs.removeClone) {
             console.log("removing clone...");
             /*
-             * If it's a clone, remove it
+             * Remove clone
              * from the pjs.balance.shapes and from the canvas
              */
             var spliceIndex = 0;
@@ -565,11 +588,14 @@ function onMouseUp(event) {
             pjs.positionClonesOnPan();              
 
         } else {
+            /*
+             * Drop the clone onto the pan
+             */
             pjs.addText(pjs.currClone);
             pjs.balance.shapes.push(pjs.currClone);
-            pjs.positionClonesOnPan();
 
             pjs.angleBeam();            
+            pjs.positionClonesOnPan();
         }
         
         pjs.currClone.selected = false;
