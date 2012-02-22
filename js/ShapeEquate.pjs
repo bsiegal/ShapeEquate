@@ -41,7 +41,7 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
          * The text is positioned x-5, y+5
          * unless it is the star.
          */
-        var point = mass === 10 ? new Point(shapeItem.position.x - 7,  shapeItem.position.y) :
+        var point = this.mass === 10 ? new Point(shapeItem.position.x - 7,  shapeItem.position.y) :
             new Point(shapeItem.position.x - 5, shapeItem.position.y + 5);  
 
         var text = new PointText(point);
@@ -280,14 +280,14 @@ var pjs = {
          */
         var leftPanPost = new Path();
         leftPanPost.add(new Point(250, 500));
-        leftPanPost.add(new Point(250, 400));
+        leftPanPost.add(new Point(250, 450));
         leftPanPost.strokeColor = '#CD9575';
         leftPanPost.strokeWidth = 10;
         pjs.balance.leftPanPost = leftPanPost;
         
         var leftPan = new Path();
-        leftPan.add(new Point(25, 400));
-        leftPan.add(new Point(475, 400));
+        leftPan.add(new Point(25, 450));
+        leftPan.add(new Point(475, 450));
         leftPan.strokeColor = '#CD9575';
         leftPan.strokeWidth = 10;
         pjs.balance.leftPan = leftPan;
@@ -297,14 +297,14 @@ var pjs = {
          */
         var rightPanPost = new Path();
         rightPanPost.add(new Point(750, 500));
-        rightPanPost.add(new Point(750, 400));
+        rightPanPost.add(new Point(750, 450));
         rightPanPost.strokeColor = '#CD9575';
         rightPanPost.strokeWidth = 10;
         pjs.balance.rightPanPost = rightPanPost;
         
         var rightPan = new Path();
-        rightPan.add(new Point(700, 400));
-        rightPan.add(new Point(800, 400));
+        rightPan.add(new Point(700, 450));
+        rightPan.add(new Point(800, 450));
         rightPan.strokeColor = '#CD9575';
         rightPan.strokeWidth = 10;
         pjs.balance.rightPan = rightPan;    
@@ -354,7 +354,7 @@ var pjs = {
 
         pjs.balance.beam.rotate(degrees);
         pjs.currRotation = degrees;
-        pjs.positionPansByBeam(degrees < 0);
+        pjs.positionPansOnBeam(degrees < 0);
 
         /*
          * If balanced, show a message that
@@ -367,25 +367,24 @@ var pjs = {
       
     },
     
-    positionPansByBeam: function(/*boolean*/ negativeDegrees) {
+    positionPansOnBeam: function(/*boolean*/ negativeDegrees) {
         /*
          * Position the pans based on the rotated beam.
          * If it's negativeDegrees, we have to use bottomLeft and topRight,
          * otherwise topLeft and bottomRight.
          */
         if (negativeDegrees) {
-            pjs.balance.leftPanPost.position = pjs.balance.beam.bounds.bottomLeft;
-            pjs.balance.rightPanPost.position = pjs.balance.beam.bounds.topRight;   
+            pjs.balance.leftPanPost.position = pjs.balance.beam.bounds.bottomLeft - new Point(0, 20);
+            pjs.balance.rightPanPost.position = pjs.balance.beam.bounds.topRight - new Point(0, 20);
         } else {
-            pjs.balance.leftPanPost.position = pjs.balance.beam.bounds.topLeft;
-            pjs.balance.rightPanPost.position = pjs.balance.beam.bounds.bottomRight;            
+            pjs.balance.leftPanPost.position = pjs.balance.beam.bounds.topLeft - new Point(0, 20);
+            pjs.balance.rightPanPost.position = pjs.balance.beam.bounds.bottomRight - new Point(0, 20);
         }
         
         pjs.balance.leftPan.position = pjs.balance.leftPanPost.bounds.topCenter;
         pjs.balance.rightPan.position = pjs.balance.rightPanPost.bounds.topCenter;
         
-        pjs.total.position.x = pjs.balance.rightPan.position.x - 25;
-        pjs.total.position.y = pjs.balance.rightPan.position.y - 5;
+        pjs.total.position = pjs.balance.rightPan.position - new Point(25, 5);
     },
     
     positionClonesOnPan: function() {
