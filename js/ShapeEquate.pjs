@@ -36,7 +36,6 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
     this.group = null; //set during init
     
     this.init = function() {
-        console.log("init");
         /*
          * Add a text.  
          * The text is positioned x-5, y+5
@@ -326,7 +325,6 @@ var pjs = {
     },
     
     angleBeam: function() {
-        console.log("pjs.angleBeam");
         /*
          * Rotate the beam 
          * based on the total on the left pan
@@ -455,13 +453,13 @@ var pjs = {
          * String the equation together
          */
         var eqPos = {x: 10, y: 625};
-        var equation = "";
+        var debugEq = "";
 
         var plus;
         for (var i = 0; i < 10; i++) {
             var sum = sums[i];
             if (sum > 0) {
-                equation = equation + " (" + sum + " x " + (i + 1) + ") +";
+                debugEq = debugEq + " (" + sum + " x " + (i + 1) + ") +";
                 var s = new PointText(eqPos);
                 s.fillColor = 'black';
                 s.characterStyle.fontSize = 12;
@@ -496,9 +494,9 @@ var pjs = {
                 eqPos.x += plus.bounds.width + 20;
             }
         }
-        equation = equation.substring(0, equation.length - 1);
-        equation = equation + " = " + pjs.total.total;
-        console.log("You did it! " + equation);
+        debugEq = debugEq.substring(0, debugEq.length - 1);
+        debugEq = debugEq + " = " + pjs.total.total;
+        console.log("You did it! " + debugEq);
         /*
          * remove the last + 
          */
@@ -516,7 +514,6 @@ var pjs = {
     },
     
     clearPan: function() {
-        console.log("clear pan hooray = " + pjs.hooray);
         /*
          * Clear the pan
          */
@@ -551,7 +548,6 @@ var pjs = {
  
 
 function onMouseDown(event) {
-	console.log("mouseDown");
 
 //  var hitResult = project.hitTest(event.point, hitOptions);
 	var hitResult = project.hitTest(event.point);
@@ -562,7 +558,7 @@ function onMouseDown(event) {
                 /*
                  * If it's a shape, clone it
                  */
-                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
+//                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
                 pjs.currClone = new Shape(hitResult.item.clone(), pjs.shapes[i].mass);
                 pjs.currClone.init();
                 
@@ -575,7 +571,7 @@ function onMouseDown(event) {
 	    
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
             if (pjs.balance.shapes[i].shapeItem === hitResult.item) {
-                console.log("isClone so marking removeClone = true");
+//                console.log("isClone so marking removeClone = true");
                 pjs.currClone = pjs.balance.shapes[i];
                 pjs.currClone.shapeItem.selected = true;
                 
@@ -596,7 +592,6 @@ function onMouseDrag(event) {
 function onMouseUp(event) {
     if (pjs.currClone) {
         if (pjs.removeClone) {
-            console.log("removing clone...");
             /*
              * Remove clone
              * from the pjs.balance.shapes and from the canvas
@@ -629,9 +624,5 @@ function onMouseUp(event) {
 
     }
 }
-
-function onMouseMove(event) {
-}
-
 
 pjs.init();
