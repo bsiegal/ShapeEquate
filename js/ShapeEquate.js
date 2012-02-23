@@ -23,10 +23,40 @@
  */
 var ShapeEquate = {
     canvasFocus: function() {
-//        var context = document.getElementById('ShapeEquateCanvas').getContext("2d");
-//        console.log("context = ");
-//        console.log(context);
-//        context.restore();
+        /*
+         * This is the only way I know right now
+         * how to force the canvas to refresh.
+         * Otherwise, pressing New total or Clear pan
+         * buttons will not show the new total or cleared pan
+         * until you click into the canvas or implement
+         * onMouseMove and move the mouse a little
+         */
+
+        var code = (function func1() {
+            var result;
+            
+            $.ajax({
+                type: "GET",
+                url: 'js/ShapeEquate.pjs',
+                async: false,
+                processData: false,
+                dataType: 'html',
+                success: function(data){
+                    result = data;
+                }
+            });
+            
+            return result;
+        })();
+        
+        /*
+         * Note the ShapeEquate.scope
+         * is defined in ShapeEquate.pjs
+         */
+        var canvas = ShapeEquate.scope.view.canvas;
+        ShapeEquate.scope.clear();
+        ShapeEquate.scope.setup(canvas);
+        ShapeEquate.scope.evaluate(code);        
     }
     
 };

@@ -1,9 +1,12 @@
 #instruct {
     position: fixed;
-    top: 10px;
+    top: 5px;
 }
 
 #ShapeEquateCanvas {
-    border: 1px solid lightgray; 
+    /*border: 1px solid lightgray;*/ 
 }
     
+button {
+    padding: 4px;
+}

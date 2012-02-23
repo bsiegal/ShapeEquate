@@ -36,18 +36,18 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
     this.group = null; //set during init
     
     this.init = function() {
+        console.log("init");
         /*
          * Add a text.  
          * The text is positioned x-5, y+5
          * unless it is the star.
          */
-        var point = this.mass === 10 ? new Point(shapeItem.position.x - 7,  shapeItem.position.y) :
-            new Point(shapeItem.position.x - 5, shapeItem.position.y + 5);  
-
+        var point = this.mass === 10 ? new Point(this.shapeItem.position.x - 7, this.shapeItem.position.y) :
+            new Point(this.shapeItem.position.x - 5, this.shapeItem.position.y + 5);  
         var text = new PointText(point);
         text.fillColor = 'black';
         text.characterStyle.fontSize = 12;
-        text.content = '' + mass;        
+        text.content = '' + mass;       
         
         this.text = text;
         this.group = new Group(shapeItem, text);
@@ -55,11 +55,10 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
     
     this.reinit = function() {
         if (this.text) {
-            this.text.remove();            
+            this.text.remove();
         }
         this.init();
     }
-    
 }
 /** all the functions and member variables except for mouse and resize handlers */
 var pjs = {
@@ -86,6 +85,8 @@ var pjs = {
          */
         PaperScope.each(function(/*PaperScope*/ scope) {
             if (scope.project) {
+                ShapeEquate.scope = scope;
+                
                 ShapeEquate.clearPan = function() {
                     
                     pjs.clearPan();
@@ -157,7 +158,7 @@ var pjs = {
         /*
          * Triangle
          */
-        var triangle = new Path.RegularPolygon(new Point(240, 100), 3, 50);
+        var triangle = new Path.RegularPolygon(new Point(240, 102), 3, 54);
         triangle.fillColor = '#7851A9';
         pjs.shapes[2] = new Shape(triangle, 3);
 
@@ -391,27 +392,36 @@ var pjs = {
         /*
          * initial offset
          */
-        var dropPositionOffset = {x: 40, y: -40};
+        var dropPositionOffsetX = 40;
+        var dropPositionMultipleY = 0.5;
         /*
          * Loop through all the clones and set them down
          * and move their texts
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
-            var clone = pjs.balance.shapes[i].shapeItem;
-            clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y + dropPositionOffset.y;
-            clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffset.x;
-            pjs.balance.shapes[i].reinit();
+            var balShape = pjs.balance.shapes[i];
+            var clone = balShape.shapeItem;
+            clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y - dropPositionMultipleY * clone.bounds.height;
+            clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffsetX;
+            balShape.reinit();
+            /*
+             * For some reason the location of text 10 is different when on the pan
+             * than when in the bank, so changing it manually here.
+             */
+            if (balShape.mass === 10) {
+                pjs.balance.shapes[i].text.position = clone.position + new Point(-10, 7);                
+            }
             /*
              * move the x offset over by the width of the clone
              */
-            dropPositionOffset.x += clone.bounds.width;
+            dropPositionOffsetX += clone.bounds.width;
             /*
              * if the new x offset is off the pan, decrement
              * the y offset and reset the x 
              */
-            if (dropPositionOffset.x > pjs.balance.leftPan.strokeBounds.topRight.x) {
-                dropPositionOffset.y -= 80;
-                dropPositionOffset.x = 40;       
+            if (dropPositionOffsetX > pjs.balance.leftPan.strokeBounds.topRight.x) {
+                dropPositionMultipleY++;
+                dropPositionOffsetX = 40;       
             }
             
         }
