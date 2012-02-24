@@ -79,7 +79,7 @@ var pjs = {
     /** initial location of hooray.firstChild */
     hoorayDest1: new Point(500, 180),
     /** alternate location of hooray.firstChild */
-    hoorayDest2: new Point(500, 650),
+    hoorayDest2: new Point(500, 640),
     /** boolean to start/stop animation */
     hoorayGo: true,
 
