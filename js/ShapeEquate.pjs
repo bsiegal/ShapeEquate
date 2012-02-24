@@ -636,14 +636,6 @@ function onMouseUp(event) {
         
         pjs.currClone.shapeItem.selected = false;
         pjs.currClone = null;            
-
-        /*
-         * Remove any existing hooray group
-         */
-        if (pjs.hooray) {
-            pjs.hooray.remove();
-        }
-
     }
 }
 
