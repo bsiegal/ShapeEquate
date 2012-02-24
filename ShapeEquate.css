@@ -1,12 +1,18 @@
 #instruct {
     position: fixed;
     top: 5px;
+    width: 1000px;
 }
 
 #ShapeEquateCanvas {
     /*border: 1px solid lightgray;*/ 
 }
     
-button {
+button, select {
     padding: 4px;
+}
+
+#rightMenu {
+    position: absolute;
+    right: 0px;
 }

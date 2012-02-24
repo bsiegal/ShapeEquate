@@ -16,6 +16,14 @@
         <div id="instruct">Balance the scale by selecting shapes for your pan.
             <button id="clearPanBtn" onclick="ShapeEquate.clearPan();">Clear my pan</button>
             <button id="newTotalBtn" onclick="ShapeEquate.newTotal();">New total</button>
+            <span id="rightMenu">Level: 
+            <select id="level" onchange="ShapeEquate.setLevel();">
+                <option value="-1">All levels</option>
+                <option value="0">Beginner</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Advanced</option>
+            </select>
+            </span>
         </div>
         <canvas id="ShapeEquateCanvas" width="1024px" height="710px"></canvas>
     </div>

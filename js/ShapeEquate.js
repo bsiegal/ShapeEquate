@@ -22,6 +22,8 @@
  * be accessible by standard JavaScript
  */
 var ShapeEquate = {
+    level: -1, /* means all levels */
+    
     reset: function() {
         /*
          * This is the only way I know right now
@@ -58,6 +60,11 @@ var ShapeEquate = {
         ShapeEquate.scope.setup(canvas);
         ShapeEquate.scope.evaluate(code);        
         ShapeEquate.total = null;
+    },
+    
+    setLevel: function() {
+        ShapeEquate.level = parseInt($('#level').val());
+        ShapeEquate.reset();
     }
     
 };

@@ -77,9 +77,11 @@ var pjs = {
     /** group of PointText, miniShapes, miniTexts and buttons to show the hooray message and equation */
     hooray: null,
     /** initial location of hooray.firstChild */
-    hoorayDest1: new Point(505, 200),
+    hoorayDest1: new Point(500, 180),
     /** alternate location of hooray.firstChild */
-    hoorayDest2: new Point(505, 610),
+    hoorayDest2: new Point(500, 650),
+    /** boolean to start/stop animation */
+    hoorayGo: true,
 
     init: function() {
         /*
@@ -97,7 +99,7 @@ var pjs = {
 
                 ShapeEquate.newTotal = function() {
                     ShapeEquate.reset();
-                }
+                };                
 
             }
         });
@@ -319,7 +321,10 @@ var pjs = {
         pjs.total.fillColor = 'black';
         pjs.total.characterStyle.fontSize = 30;
         
-        var num = ShapeEquate.total ? ShapeEquate.total : Math.floor(Math.random() * 60) + 1;
+        console.log("ShapeEquate.level = " + ShapeEquate.level);
+        var num = ShapeEquate.total ? ShapeEquate.total : 
+            ShapeEquate.level === -1 ? Math.round(Math.random() * 60) + 1 :
+                Math.round(Math.random() * 20) + ShapeEquate.level * 20 + 1;
         pjs.total.content = '' + num;
         pjs.total.total = num;
     },
@@ -443,10 +448,10 @@ var pjs = {
             sums[mass - 1] = sums[mass - 1] + 1;
         }
         
-        var roundRec = new Rectangle(new Point(0, 580), new Size(990, 60));
+        var roundRec = new Rectangle(new Point(5, 580), new Size(990, 60));
         var container = new Path.RoundRectangle(roundRec, new Size(10, 10));        
-        container.fillColor = '#FAE7B5';
-        container.strokeColor = '#414A4C';
+        container.fillColor = '#FFFFE0';
+        container.strokeColor = '#E6DB55';
         container.strokeWidth = 1;
         pjs.hooray.addChild(container);
         
@@ -518,7 +523,6 @@ var pjs = {
         tot.content = ' = ' + pjs.total.total;
         pjs.hooray.addChild(tot);
 
-        console.log("pjs.hooray.firstChild.position = " + pjs.hooray.firstChild.position);
         pjs.hoorayDest = pjs.hoorayDest1;
     },
     
@@ -539,6 +543,7 @@ var pjs = {
          */
         if (pjs.hooray) {
             pjs.hooray.remove();
+            pjs.hooray = null;
         }
 
     },
@@ -563,10 +568,10 @@ var pjs = {
  
 
 function onMouseDown(event) {
-
 //  var hitResult = project.hitTest(event.point, hitOptions);
 	var hitResult = project.hitTest(event.point);
     if (hitResult && hitResult.item) {
+
         for (var i = 0; i < pjs.shapes.length; i++) {
 
             if (pjs.shapes[i].shapeItem === hitResult.item) {
@@ -580,6 +585,16 @@ function onMouseDown(event) {
                 pjs.currClone.shapeItem.selected = true;  
     	
                 pjs.removeClone = false;
+
+                /*
+                 * Remove hooray in case
+                 * still playing after success hooray
+                 */
+                if (pjs.hooray) {
+                    pjs.hooray.remove();
+                    pjs.hooray = null;
+                }
+
                 return;
             }
         }
@@ -592,8 +607,23 @@ function onMouseDown(event) {
                 
                 pjs.removeClone = true;
                 
+                /*
+                 * Remove hooray in case
+                 * still playing after success hooray
+                 */
+                if (pjs.hooray) {
+                    pjs.hooray.remove();
+                    pjs.hooray = null;
+                }
+
                 return;
             }            
+        }
+        /*
+         * If it's the hooray container, toggle animation
+         */
+        if (pjs.hooray && pjs.hooray.firstChild === hitResult.item) {
+            pjs.hoorayGo = !pjs.hoorayGo;
         }
 	}
 }
@@ -640,7 +670,7 @@ function onMouseUp(event) {
 }
 
 function onFrame(event) {
-    if (pjs.hooray && pjs.hoorayDest) {
+    if (pjs.hooray && pjs.hoorayDest && pjs.hoorayGo) {
         /*
          * Animate moving the hooray message around
          */
@@ -648,7 +678,7 @@ function onFrame(event) {
         // between it and the destination.
         
         // The vector is the difference between the position of
-        // the text item and the destination point:
+        // the hooray container and the destination point:
         var vector = pjs.hoorayDest - pjs.hooray.firstChild.position;
         
         // We add 1/30th of the vector to the position property
@@ -657,7 +687,7 @@ function onFrame(event) {
         pjs.hooray.position += vector / 30;
         
         // If the distance between the path and the destination is less
-        // than 5, we let it bounce back to the bottom
+        // than 5, we let it bounce back to the other direction
         if (vector.length < 5) {
             pjs.hoorayDest = pjs.hoorayDest === pjs.hoorayDest1 ? pjs.hoorayDest2 : pjs.hoorayDest1;
         }        
