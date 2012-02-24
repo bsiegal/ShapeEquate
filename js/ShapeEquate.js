@@ -22,7 +22,7 @@
  * be accessible by standard JavaScript
  */
 var ShapeEquate = {
-    canvasFocus: function() {
+    reset: function() {
         /*
          * This is the only way I know right now
          * how to force the canvas to refresh.
@@ -57,6 +57,7 @@ var ShapeEquate = {
         ShapeEquate.scope.clear();
         ShapeEquate.scope.setup(canvas);
         ShapeEquate.scope.evaluate(code);        
+        ShapeEquate.total = null;
     }
     
 };

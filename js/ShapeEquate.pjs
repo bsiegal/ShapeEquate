@@ -76,6 +76,10 @@ var pjs = {
     currRotation: 0,
     /** group of PointText, miniShapes, miniTexts and buttons to show the hooray message and equation */
     hooray: null,
+    /** initial location of hooray.firstChild */
+    hoorayDest1: new Point(505, 200),
+    /** alternate location of hooray.firstChild */
+    hoorayDest2: new Point(505, 610),
 
     init: function() {
         /*
@@ -87,17 +91,12 @@ var pjs = {
                 ShapeEquate.scope = scope;
                 
                 ShapeEquate.clearPan = function() {
-                    
-                    pjs.clearPan();
-                    
-                    ShapeEquate.canvasFocus();
+                    ShapeEquate.total = pjs.total.total;
+                    ShapeEquate.reset();
                 };
 
                 ShapeEquate.newTotal = function() {
-                    
-                    pjs.newTotal();
-                    
-                    ShapeEquate.clearPan();
+                    ShapeEquate.reset();
                 }
 
             }
@@ -312,14 +311,15 @@ var pjs = {
 
     createTotal: function() {
         /*
-         * The total is a random number
+         * The total is ShapeEquate.total
+         * or if undefined then a random number
          * between 1 and 60
          */
         pjs.total = new PointText(new Point(700, 400));
         pjs.total.fillColor = 'black';
         pjs.total.characterStyle.fontSize = 30;
         
-        var num = Math.floor(Math.random() * 60) + 1;
+        var num = ShapeEquate.total ? ShapeEquate.total : Math.floor(Math.random() * 60) + 1;
         pjs.total.content = '' + num;
         pjs.total.total = num;
     },
@@ -443,10 +443,17 @@ var pjs = {
             sums[mass - 1] = sums[mass - 1] + 1;
         }
         
+        var roundRec = new Rectangle(new Point(0, 580), new Size(990, 60));
+        var container = new Path.RoundRectangle(roundRec, new Size(10, 10));        
+        container.fillColor = '#FAE7B5';
+        container.strokeColor = '#414A4C';
+        container.strokeWidth = 1;
+        pjs.hooray.addChild(container);
+        
         var congrats = new PointText(new Point(10, 600));
         congrats.fillColor = 'black';
         congrats.characterStyle.fontSize = 12;
-        congrats.content = 'You did it! ';
+        congrats.content = ' You did it! ';
         pjs.hooray.addChild(congrats);
 
         /*
@@ -510,12 +517,17 @@ var pjs = {
         tot.characterStyle.fontSize = 12;
         tot.content = ' = ' + pjs.total.total;
         pjs.hooray.addChild(tot);
-        
+
+        console.log("pjs.hooray.firstChild.position = " + pjs.hooray.firstChild.position);
+        pjs.hoorayDest = pjs.hoorayDest1;
     },
     
     clearPan: function() {
         /*
-         * Clear the pan
+         * Clear the pan.
+         * This is not being called
+         * because ShapeEquate.reset
+         * is used instead.
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
             pjs.balance.shapes[i].group.remove();
@@ -534,7 +546,10 @@ var pjs = {
     newTotal: function() {
         /*
          * Reset the total, then call
-         * clearPan
+         * clearPan.
+         * This is not being called
+         * because ShapeEquate.reset
+         * is used instead.
          */
         if (pjs.total) {
             pjs.total.remove();
@@ -622,6 +637,38 @@ function onMouseUp(event) {
         pjs.currClone.shapeItem.selected = false;
         pjs.currClone = null;            
 
+        /*
+         * Remove any existing hooray group
+         */
+        if (pjs.hooray) {
+            pjs.hooray.remove();
+        }
+
+    }
+}
+
+function onFrame(event) {
+    if (pjs.hooray && pjs.hoorayDest) {
+        /*
+         * Animate moving the hooray message around
+         */
+        // Each frame, move the path 1/30th of the difference in position
+        // between it and the destination.
+        
+        // The vector is the difference between the position of
+        // the text item and the destination point:
+        var vector = pjs.hoorayDest - pjs.hooray.firstChild.position;
+        
+        // We add 1/30th of the vector to the position property
+        // of the text item, to move it in the direction of the
+        // destination point:
+        pjs.hooray.position += vector / 30;
+        
+        // If the distance between the path and the destination is less
+        // than 5, we let it bounce back to the bottom
+        if (vector.length < 5) {
+            pjs.hoorayDest = pjs.hoorayDest === pjs.hoorayDest1 ? pjs.hoorayDest2 : pjs.hoorayDest1;
+        }        
     }
 }
 
