@@ -540,6 +540,11 @@ var pjs = {
         pjs.hooray.addChild(tot);
 
         pjs.hoorayDest = pjs.hoorayDest1;
+        
+        /*
+         * always reset allowing animation
+         */
+        pjs.hoorayGo = true;
     },
     
     getOtherShapesCloneCount: function(/*Shape*/ shape) {
