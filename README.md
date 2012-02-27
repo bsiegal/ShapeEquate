@@ -5,15 +5,15 @@ This is a math game for kids created with [paper.js](http://paperjs.org/).  It c
 
 How to play
 --------------------------------------
-* Select a shape by clicking on it (or dragging and dropping it on your pan).
+* Select a shape by clicking on it (or dragging and dropping it onto your pan).
 * Continue to add shapes until the scale is balanced.
 * If you have added too much, you may remove any shape from your pan by clicking on it (or dragging and dropping it off your pan).
-* When the scale is balanced you will see the equation you have created.
+* When the scale is balanced you will see the equation you have created!
 
 How to play again
 --------------------------------------
-* To try to create a different equation with the same total, you may click the "Clear my pan" button, or by continuing to add and/or remove more shapes.
-* To play again with a different toal, click the "New total" button.
+* To try to create a different equation with the same total, you may click the "Clear my pan" button, or you may continue to add and/or remove shapes.
+* To play again with a different total, click the "New total" button.
 * You may also play again by changing the level.
 
 Levels
