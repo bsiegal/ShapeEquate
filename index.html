@@ -18,10 +18,13 @@
             <button id="newTotalBtn" onclick="ShapeEquate.newTotal();">New total</button>
             <span id="rightMenu">Level: 
             <select id="level" onchange="ShapeEquate.setLevel();">
-                <option value="-1">All levels</option>
                 <option value="0">Beginner</option>
                 <option value="1">Intermediate</option>
                 <option value="2">Advanced</option>
+                <optgroup label="Expert challenges">
+                    <option value="100">Any shape once</option>
+                    <option value="200">One shape multiples</option>
+                </optgroup>
             </select>
             </span>
         </div>

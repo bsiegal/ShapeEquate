@@ -22,7 +22,7 @@
  * be accessible by standard JavaScript
  */
 var ShapeEquate = {
-    level: -1, /* means all levels */
+    level: 0, /* means all levels */
     
     reset: function() {
         /*
@@ -68,5 +68,3 @@ var ShapeEquate = {
     }
     
 };
-
-

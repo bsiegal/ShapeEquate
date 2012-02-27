@@ -30,10 +30,18 @@ var hitOptions = {
  */
 function Shape(/*Path*/ shapeItem, /*int*/ mass) {
 
+    /* the Path shapeItem */
     this.shapeItem = shapeItem;
+    /* the value for mass of this shape */
     this.mass = mass;
+    /* the PointText */
     this.text = null; //set during init
+    /* the group for the shapeItem and text together */
     this.group = null; //set during init
+    /* the Shape this was cloned from, if this is an original, will be null */
+    this.clonedFrom = null;
+    /* number of clones it has (if it is a clone it will always be 0) */
+    this.cloneCount = 0;
     
     this.init = function() {
         /*
@@ -59,7 +67,7 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
         this.init();
     }
 }
-/** all the functions and member variables except for mouse and resize handlers */
+/** all the functions and member variables except for mouse handlers */
 var pjs = {
     
     /** holder of all shape objects */
@@ -323,8 +331,16 @@ var pjs = {
         
         console.log("ShapeEquate.level = " + ShapeEquate.level);
         var num = ShapeEquate.total ? ShapeEquate.total : 
-            ShapeEquate.level === -1 ? Math.round(Math.random() * 60) + 1 :
-                Math.round(Math.random() * 20) + ShapeEquate.level * 20 + 1;
+            /* random int between (1 and 20) or (21 and 40) or (41 and 60), inclusive */ 
+            ShapeEquate.level >= 0 && ShapeEquate.level <= 2 ? Math.floor(Math.random() * 20) + ShapeEquate.level * 20 + 1 :
+                /* random int between 1 and 55, inclusive */
+                ShapeEquate.level === 100 ? Math.floor(Math.random() * 55) + 1 :
+                    /* random composite number (random int 1-10 multiplied by random int 2-6) */
+                    ShapeEquate.level === 200 ? (Math.floor(Math.random() * 10) + 1) * (Math.floor(Math.random() * 5) + 2) :
+                        /* random int between 1 and 60, inclusive */
+                        Math.floor(Math.random() * 60) + 1;
+
+                        
         pjs.total.content = '' + num;
         pjs.total.total = num;
     },
@@ -526,6 +542,17 @@ var pjs = {
         pjs.hoorayDest = pjs.hoorayDest1;
     },
     
+    getOtherShapesCloneCount: function(/*Shape*/ shape) {
+        var cloneCount = 0;
+        for (var i = 0; i < pjs.shapes.length; i++) {
+            if (pjs.shapes[i] === shape) {
+                continue;
+            }
+            cloneCount += pjs.shapes[i].cloneCount;
+        }
+        return cloneCount;
+    },
+    
     clearPan: function() {
         /*
          * Clear the pan.
@@ -576,14 +603,42 @@ function onMouseDown(event) {
 
             if (pjs.shapes[i].shapeItem === hitResult.item) {
                 /*
-                 * If it's a shape, clone it
+                 * If it's a shape, clone it...
                  */
+                console.log("cloneCount is " + pjs.shapes[i].cloneCount);
+                /*
+                 * ... unless it is level 100 (can only be cloned 1x) and already has a clone
+                 */
+                if (ShapeEquate.level === 100 && pjs.shapes[i].cloneCount > 0) {
+                    return;
+                }
+                /*
+                 * ... unless it is level 200 (only one shape can have clones) 
+                 * and already has a clone that is not this shape 
+                 */
+                if (ShapeEquate.level === 200 && pjs.getOtherShapesCloneCount(pjs.shapes[i]) > 0) {
+                    return;
+                }
+                
 //                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
+                /*
+                 * Make clone and create a new shape
+                 */
                 pjs.currClone = new Shape(hitResult.item.clone(), pjs.shapes[i].mass);
                 pjs.currClone.init();
+                /*
+                 * mark from whom it was cloned, 
+                 * which is necessary for level >= 100
+                 */
+                pjs.currClone.clonedFrom = pjs.shapes[i];
                 
+                /*
+                 * Show the clone as 'selected'
+                 */
                 pjs.currClone.shapeItem.selected = true;  
-    	
+                /*
+                 * set the mode so onMouseUp will know what to do
+                 */
                 pjs.removeClone = false;
 
                 /*
@@ -630,6 +685,11 @@ function onMouseDown(event) {
 
 function onMouseDrag(event) {
     if (pjs.currClone) {
+        /*
+         * Move the current clone along the mouse drag.
+         * This is not necessary, but a nice way
+         * to visualize dragging a shape on or off the pan.
+         */
         pjs.currClone.shapeItem.position = event.point;
     }
 }
@@ -649,8 +709,18 @@ function onMouseUp(event) {
                 }
             }
             pjs.balance.shapes.splice(j, 1);
+            /*
+             * decrement the clone count
+             */
+            pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount - 1;
+            console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+            /*
+             * remove the clone from the canvas
+             */
             pjs.currClone.group.remove();
-            
+            /*
+             * reposition the balance
+             */
             pjs.angleBeam();
             pjs.positionClonesOnPan();              
 
@@ -659,11 +729,22 @@ function onMouseUp(event) {
              * Drop the clone onto the pan
              */
             pjs.balance.shapes.push(pjs.currClone);
-
+            /*
+             * increment the clone count
+             */
+            pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount + 1; 
+            console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+            
+            /*
+             * reposition the balance
+             */
             pjs.angleBeam();            
             pjs.positionClonesOnPan();
         }
         
+        /*
+         * de-select the clone
+         */
         pjs.currClone.shapeItem.selected = false;
         pjs.currClone = null;            
     }
