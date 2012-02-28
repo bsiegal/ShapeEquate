@@ -329,7 +329,7 @@ var pjs = {
         pjs.total.fillColor = 'black';
         pjs.total.characterStyle.fontSize = 30;
         
-        console.log("ShapeEquate.level = " + ShapeEquate.level);
+//        console.log("ShapeEquate.level = " + ShapeEquate.level);
         var num = ShapeEquate.total ? ShapeEquate.total : 
             /* random int between (1 and 20) or (21 and 40) or (41 and 60), inclusive */ 
             ShapeEquate.level >= 0 && ShapeEquate.level <= 2 ? Math.floor(Math.random() * 20) + ShapeEquate.level * 20 + 1 :
@@ -375,6 +375,9 @@ var pjs = {
         pjs.balance.beam.rotate(degrees);
         pjs.currRotation = degrees;
         pjs.positionPansOnBeam(degrees < 0);
+        if (degrees < 0) {
+            ShapeEquate.playOops();
+        }
 
         /*
          * If balanced, show a message that
@@ -545,6 +548,7 @@ var pjs = {
          * always reset allowing animation
          */
         pjs.hoorayGo = true;
+        ShapeEquate.playHooray();
     },
     
     getOtherShapesCloneCount: function(/*Shape*/ shape) {
@@ -610,7 +614,7 @@ function onMouseDown(event) {
                 /*
                  * If it's a shape, clone it...
                  */
-                console.log("cloneCount is " + pjs.shapes[i].cloneCount);
+//                console.log("cloneCount is " + pjs.shapes[i].cloneCount);
                 /*
                  * ... unless it is level 100 (can only be cloned 1x) and already has a clone
                  */
@@ -703,6 +707,10 @@ function onMouseUp(event) {
     if (pjs.currClone) {
         if (pjs.removeClone) {
             /*
+             * play sound effect
+             */
+            ShapeEquate.playRemove();
+            /*
              * Remove clone
              * from the pjs.balance.shapes and from the canvas
              */
@@ -718,7 +726,7 @@ function onMouseUp(event) {
              * decrement the clone count
              */
             pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount - 1;
-            console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+//            console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
             /*
              * remove the clone from the canvas
              */
@@ -731,6 +739,10 @@ function onMouseUp(event) {
 
         } else {
             /*
+             * play sound effect
+             */
+            ShapeEquate.playAdd();
+            /*
              * Drop the clone onto the pan
              */
             pjs.balance.shapes.push(pjs.currClone);
@@ -738,7 +750,7 @@ function onMouseUp(event) {
              * increment the clone count
              */
             pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount + 1; 
-            console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+//            console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
             
             /*
              * reposition the balance

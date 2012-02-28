@@ -65,6 +65,29 @@ var ShapeEquate = {
     setLevel: function() {
         ShapeEquate.level = parseInt($('#level').val());
         ShapeEquate.reset();
+    },
+    
+    playSound: function(file) {
+        var soundHandle = document.getElementById('soundHandle');
+        soundHandle.src = 'sounds/' + file;
+        soundHandle.play();        
+        console.log("playing " + soundHandle.src);
+    },
+    
+    playHooray: function() {
+        ShapeEquate.playSound('yipee.wav');
+    },
+ 
+    playOops: function() {
+        ShapeEquate.playSound('peeeooop_x.wav');
+    },
+    
+    playAdd: function() {
+        ShapeEquate.playSound('chime_up.wav');
+    },
+    
+    playRemove: function() {
+        ShapeEquate.playSound('chime_down.wav');
     }
     
 };

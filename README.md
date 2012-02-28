@@ -1,7 +1,7 @@
 Shape Equate
 ==================================================
 
-This is a math game for kids created with [paper.js](http://paperjs.org/).  It can be played using any HTML5 browser and fits well on an iPad when held in landscape position.  This project has examples of how to create shapes -- using pre-defined shaped paths or manually creating them with lines and/or curves.  It also has simple examples of using text, group, handling mouse events, cloning, rotating, changing position, scaling, animating movement, and integrating JavaScript code outside of PaperScript with PaperScript.
+This is a math game for kids created with [Paper.js](http://paperjs.org/).  It can be played using any HTML5 browser and fits well on an iPad when held in landscape position.  This project has examples of how to create shapes -- using pre-defined shaped paths or manually creating them with lines and/or curves.  It also has simple examples of using text, group, handling mouse events, cloning, rotating, changing position, scaling, animating movement, and integrating JavaScript code outside of PaperScript with PaperScript.  Also, it has an example of using HTML5 audio tag for sound effects.
 
 How to play
 --------------------------------------
