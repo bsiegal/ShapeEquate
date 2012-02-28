@@ -58,6 +58,10 @@ var ShapeEquate = {
     
     playRemove: function() {
         ShapeEquate.playSound('chime_down.wav');
+    },
+    
+    playInvalid: function() {
+        ShapeEquate.playSound('blip.wav');
     }
     
 };

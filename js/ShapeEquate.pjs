@@ -620,6 +620,7 @@ function onMouseDown(event) {
                  * ... unless it is level 100 (can only be cloned 1x) and already has a clone
                  */
                 if (ShapeEquate.level === 100 && pjs.shapes[i].cloneCount > 0) {
+                    ShapeEquate.playInvalid();
                     return;
                 }
                 /*
@@ -627,6 +628,7 @@ function onMouseDown(event) {
                  * and already has a clone that is not this shape 
                  */
                 if (ShapeEquate.level === 200 && pjs.getOtherShapesCloneCount(pjs.shapes[i]) > 0) {
+                    ShapeEquate.playInvalid();
                     return;
                 }
                 
