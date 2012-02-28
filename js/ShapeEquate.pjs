@@ -102,11 +102,13 @@ var pjs = {
                 
                 ShapeEquate.clearPan = function() {
                     ShapeEquate.total = pjs.total.total;
-                    ShapeEquate.reset();
+                    pjs.clearPan();
+                    ShapeEquate.draw();
                 };
 
                 ShapeEquate.newTotal = function() {
-                    ShapeEquate.reset();
+                    pjs.newTotal();
+                    ShapeEquate.draw();
                 };                
 
             }
@@ -565,9 +567,6 @@ var pjs = {
     clearPan: function() {
         /*
          * Clear the pan.
-         * This is not being called
-         * because ShapeEquate.reset
-         * is used instead.
          */
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
             pjs.balance.shapes[i].group.remove();
@@ -581,16 +580,18 @@ var pjs = {
             pjs.hooray.remove();
             pjs.hooray = null;
         }
-
+        /*
+         * reset all cloneCount
+         */
+        for (var i = 0; i < pjs.shapes.length; i++) {
+            pjs.shapes[i].cloneCount = 0;
+        }
     },
     
     newTotal: function() {
         /*
          * Reset the total, then call
          * clearPan.
-         * This is not being called
-         * because ShapeEquate.reset
-         * is used instead.
          */
         if (pjs.total) {
             pjs.total.remove();
