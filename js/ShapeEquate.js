@@ -16,13 +16,8 @@
  *
  ******************************************************************************/
 
-/**
- * Just a for ShapeEquate.pjs
- * to define functions on, to
- * be accessible by standard JavaScript
- */
 var ShapeEquate = {
-    level: 0, /* means all levels */
+    level: 0, /* default level */
     
     draw: function() {
         var view = ShapeEquate.scope.view;

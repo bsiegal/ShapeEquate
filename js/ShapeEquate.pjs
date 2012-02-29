@@ -594,6 +594,7 @@ var pjs = {
          * clearPan.
          */
         if (pjs.total) {
+            ShapeEquate.total = null;
             pjs.total.remove();
             pjs.createTotal();
         }
