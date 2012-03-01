@@ -54,14 +54,16 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
         
         this.text = text;
         this.group = new Group(shapeItem, text);
-    } 
+    }; 
     
-    this.reinit = function() {
-        if (this.text) {
-            this.text.remove();
-        }
-        this.init();
-    }
+    this.move = function(/*Point*/ point) {
+        /*
+         * trying to move the group to the new point does not give the desired result,
+         * so move each child manually.
+         */
+        this.shapeItem.position = point;
+        this.text.position = point + new Point(0, this.text.characterStyle.fontSize / 2);
+    };
 }
 /** all the functions and member variables except for mouse handlers */
 var pjs = {
@@ -428,9 +430,9 @@ var pjs = {
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
             var balShape = pjs.balance.shapes[i];
             var clone = balShape.shapeItem;
-            clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y - dropPositionMultipleY * clone.bounds.height;
-            clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffsetX;
-            balShape.reinit();
+            var newPoint = new Point(pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffsetX,
+                    pjs.balance.leftPan.strokeBounds.topLeft.y - dropPositionMultipleY * clone.bounds.height);
+            balShape.move(newPoint);
 
             /*
              * move the x offset over by the width of the clone
@@ -544,6 +546,11 @@ var pjs = {
          * always reset allowing animation
          */
         pjs.hoorayGo = true;
+        
+        for (var i = 0; i < pjs.balance.shapes.length; i++) {
+            pjs.hooray.moveAbove(pjs.balance.shapes[i].group);
+        }
+        
         ShapeEquate.playHooray();
     },
     
@@ -697,7 +704,7 @@ function onMouseDrag(event) {
          * This is not necessary, but a nice way
          * to visualize dragging a shape on or off the pan.
          */
-        pjs.currClone.shapeItem.position = event.point;
+        pjs.currClone.move(event.point);
     }
 }
 
