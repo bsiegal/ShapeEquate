@@ -32,10 +32,22 @@ var ShapeEquate = {
     },
     
     playSound: function(file) {
+        if ((navigator.userAgent.match(/iPhone/i)) || 
+                (navigator.userAgent.match(/iPod/i))) {
+            /*
+             * Sound is too slow on iPad.
+             * From https://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/ControllingMediaWithJavaScript/ControllingMediaWithJavaScript.html --
+             * Note: On the iPad, Safari does not begin downloading until the user clicks the poster or placeholder. 
+             * Currently, downloads begun in this manner do not emit progress events.
+             * 
+             * So we will not play sounds if the userAgent is iPad.
+             */
+            return;
+        }
         var soundHandle = document.getElementById('soundHandle');
         if (soundHandle && soundHandle.play) {
             soundHandle.src = 'sounds/' + file;
-            soundHandle.play();                   
+            soundHandle.play();               
         }
     },
     

@@ -44,17 +44,13 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
     this.cloneCount = 0;
     
     this.init = function() {
-        /*
-         * Add a text.  
-         * The text is positioned x-5, y+5
-         * unless it is the star.
-         */
-        var point = this.mass === 10 ? new Point(this.shapeItem.position.x - 7, this.shapeItem.position.y) :
-            new Point(this.shapeItem.position.x - 5, this.shapeItem.position.y + 5);  
-        var text = new PointText(point);
+
+        var text = new PointText(this.shapeItem.position);
         text.fillColor = 'black';
         text.characterStyle.fontSize = 12;
         text.content = '' + mass;       
+        text.paragraphStyle.justification = 'center';
+        text.position = text.position + new Point(0, text.characterStyle.fontSize / 2);
         
         this.text = text;
         this.group = new Group(shapeItem, text);
@@ -263,6 +259,12 @@ var pjs = {
         for (var i = 0; i < pjs.shapes.length; i++) {
             pjs.shapes[i].init();
         }
+        
+        /*
+         * For some reason the star's text is off in the bank,
+         * so fudging...
+         */
+        pjs.shapes[9].text.position -= new Point(-1, 5);
     },
 
     createBalance: function() {
@@ -327,7 +329,7 @@ var pjs = {
          * or if undefined then a random number
          * between 1 and 60
          */
-        pjs.total = new PointText(new Point(700, 400));
+        pjs.total = new PointText(new Point(750, 400));
         pjs.total.fillColor = 'black';
         pjs.total.characterStyle.fontSize = 30;
         
@@ -344,6 +346,7 @@ var pjs = {
 
                         
         pjs.total.content = '' + num;
+        pjs.total.paragraphStyle.justification = 'center';
         pjs.total.total = num;
     },
     
@@ -409,7 +412,7 @@ var pjs = {
         pjs.balance.leftPan.position = pjs.balance.leftPanPost.bounds.topCenter;
         pjs.balance.rightPan.position = pjs.balance.rightPanPost.bounds.topCenter;
         
-        pjs.total.position = pjs.balance.rightPan.position - new Point(25, 5);
+        pjs.total.position = pjs.balance.rightPan.position - new Point(0, 5);
     },
     
     positionClonesOnPan: function() {
@@ -428,13 +431,7 @@ var pjs = {
             clone.position.y = pjs.balance.leftPan.strokeBounds.topLeft.y - dropPositionMultipleY * clone.bounds.height;
             clone.position.x = pjs.balance.leftPan.strokeBounds.topLeft.x + dropPositionOffsetX;
             balShape.reinit();
-            /*
-             * For some reason the location of text 10 is different when on the pan
-             * than when in the bank, so changing it manually here.
-             */
-            if (balShape.mass === 10) {
-                pjs.balance.shapes[i].text.position = clone.position + new Point(-10, 7);                
-            }
+
             /*
              * move the x offset over by the width of the clone
              */
@@ -499,7 +496,7 @@ var pjs = {
                 s.content = ' (' + sum + ' x ';
                 pjs.hooray.addChild(s);
                 
-                eqPos.x += s.bounds.width + 50;
+                eqPos.x += s.bounds.width + 50; //eqPos.x += s.content.length * s.characterStyle.fontSize; 
                 
                 var miniShape = pjs.shapes[i].shapeItem.clone();
                 miniShape.scale(0.33);
@@ -511,11 +508,8 @@ var pjs = {
                 
                 var miniText = pjs.shapes[i].text.clone();
                 miniText.scale(0.8);
-                miniText.position.x = miniShape.position.x - 3.5;
-                if (pjs.shapes[i].mass === 10) {
-                    miniText.position.x -= 5;
-                }
-                miniText.position.y = miniShape.position.y + 5;
+                miniText.paragraphStyle.justification = 'center';
+                miniText.position = miniShape.position + new Point(0, 5);
                 pjs.hooray.addChild(miniText);
                 
                 plus = new PointText(eqPos);                
