@@ -15,12 +15,48 @@
     <link rel="stylesheet" href="ShapeEquate.css">
 </head>
 <body>
-    <!--a href="http://github.com/bsiegal/ShapeEquate"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub"></a-->
     <div id="container">
+        <div id="title">
+            <span class="title">Shape Equate</span>
+            <span class="rightMenu"><a href="javascript:ShapeEquate.toggleAbout()">About</a></span>
+            <div id="about" style="display: none">
+                <a href="http://github.com/bsiegal/ShapeEquate"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+                <div class="title">
+                    <h1>Shape Equate</h1>
+                    A math game for kids - by <a href="http://github.com/bsiegal/">Bess Siegal</a>
+                </div>
+                <h2>How to play</h2>
+                <ul>
+                    <li>Select a shape by clicking on it (or dragging and dropping it onto your pan).</li>
+                    <li>Continue to add shapes until the scale is balanced.</li>
+                    <li>If you have added too much, you may remove any shape from your pan by clicking on it (or dragging and dropping it off your pan).</li>
+                    <li>When the scale is balanced you will see the equation you have created!</li>
+                </ul>
+                <h2>Levels</h2>
+                <ul>
+                    <li>Beginner - the total will be between 1 and 20, inclusive.</li>
+                    <li>Intermediate - the total will be between 21 and 40, inclusive.</li>
+                    <li>Advanced - the total will be between 41 and 60, inclusive.</li>
+                    <li>
+                    Expert challenges
+                    <ul>
+                        <li>Any shape once - the total will be between 1 and 55, inclusive. You may select any shape, but each shape can only be placed on the pan once.</li>
+                        <li>One shape multiples - the total will be a product (composite number aka no primes) between 2 and 60, inclusive. You may select a single shape any number of times, and you may not select any other shape.</li>
+                    </ul>
+                    </li>
+                </ul>
+                <h2>Source</h2>
+                <ul>
+                    <li>This game was created with <a href="http://paperjs.org/">Paper.js</a>.</li>
+                    <li>The <a href="http://github.com/bsiegal/ShapeEquate">code</a> is open source under the Apache license.</li>
+                    <li>Your feedback is welcome.  Email me at <a href="mailto:bess.mah@gmail.com">bess.mah@gmail.com</a>.  Thanks for having a look!</li>
+                </ul>
+            </div>            
+        </div>        
         <div id="instruct">Balance the scale by selecting shapes for your pan.
-            <button id="clearPanBtn" onclick="ShapeEquate.clearPan();">Clear my pan</button>
+            <button id="clearPanBtn" onclick="ShapeEquate.clearPan();">Clear</button>
             <button id="newTotalBtn" onclick="ShapeEquate.newTotal();">New total</button>
-            <span id="rightMenu">Level: 
+            <span class="rightMenu">Level: 
             <select id="level" onchange="ShapeEquate.setLevel();">
                 <option value="0">Beginner</option>
                 <option value="1">Intermediate</option>
@@ -32,8 +68,9 @@
             </select>
             </span>
         </div>
-        <canvas id="ShapeEquateCanvas" width="1024px" height="710px"></canvas>
+        <canvas id="ShapeEquateCanvas" width="1000px" height="710px"></canvas>
     </div>
     <audio id="soundHandle" style="display: none;"></audio>
+
 </body>
 </html>

@@ -25,9 +25,7 @@ var ShapeEquate = {
     },
     
     setLevel: function() {
-        var e = document.getElementById('level');
-        var lev = e.options[e.selectedIndex].value;
-        ShapeEquate.level = parseInt(lev);
+        ShapeEquate.level = parseInt($('#level').val());
         ShapeEquate.newTotal(); //defined by ShapeEquate.pjs
     },
     
@@ -69,6 +67,30 @@ var ShapeEquate = {
     
     playInvalid: function() {
         ShapeEquate.playSound('blip.wav');
-    }
+    },
     
+    about: function(show) {
+        if (show) {
+            $('#about').slideDown();
+        } else {
+            $('#about').slideUp();
+        }
+    },
+    
+    toggleAbout: function() {
+        if ($('#about').is(':visible')) {
+            ShapeEquate.about(false);
+        } else {
+            ShapeEquate.about(true);
+        }
+    }
 };
+
+$(function() {
+    $('html').click(function() {
+        if ($('#about').is(':visible')) {
+            $('#about').slideUp();
+        }
+    });
+
+});

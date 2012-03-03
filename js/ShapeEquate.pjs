@@ -17,10 +17,6 @@
  ******************************************************************************/
 
 
-var hitOptions = {
-    fill: true,
-    tolerance: 5
-};
 
 /**
  * This function creates a Shape object.
@@ -32,6 +28,8 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
 
     /* the Path shapeItem */
     this.shapeItem = shapeItem;
+    /* the color when enabled */
+    this.color = shapeItem.fillColor;
     /* the value for mass of this shape */
     this.mass = mass;
     /* the PointText */
@@ -45,9 +43,11 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
     
     this.init = function() {
 
+        this.shapeItem.strokeColor = '#d5b99e';        
         var text = new PointText(this.shapeItem.position);
         text.fillColor = 'black';
-        text.characterStyle.fontSize = 12;
+        text.characterStyle.fontSize = 14;
+        
         text.content = '' + mass;       
         text.paragraphStyle.justification = 'center';
         text.position = text.position + new Point(0, text.characterStyle.fontSize / 2);
@@ -64,6 +64,14 @@ function Shape(/*Path*/ shapeItem, /*int*/ mass) {
         this.shapeItem.position = point;
         this.text.position = point + new Point(0, this.text.characterStyle.fontSize / 2);
     };
+    
+    this.disable = function() {
+        this.shapeItem.fillColor = '#e0e0dd';
+    };
+    
+    this.enable = function() {
+        this.shapeItem.fillColor = this.color;
+    }
 }
 /** all the functions and member variables except for mouse handlers */
 var pjs = {
@@ -83,9 +91,7 @@ var pjs = {
     /** group of PointText, miniShapes, miniTexts and buttons to show the hooray message and equation */
     hooray: null,
     /** initial location of hooray.firstChild */
-    hoorayDest1: new Point(500, 180),
-    /** alternate location of hooray.firstChild */
-    hoorayDest2: new Point(500, 640),
+    hoorayDest: new Point(500, 180),
     /** boolean to start/stop animation */
     hoorayGo: true,
 
@@ -122,11 +128,12 @@ var pjs = {
         /*
          * rectangle area for the shape bank
          */
-        var point = new Point(0, 30);
-        var size = new Size(1000, 115);
+        var point = new Point(0, 5);
+        var size = new Size(1000, 125);
         var rect = new Rectangle(point, size);
-        var bank = new Path.Rectangle(rect);
-        bank.fillColor = '#EFDECD';
+        var bank = new Path.RoundRectangle(rect, 10);
+        bank.strokeColor = '#d5b99e';
+        bank.fillColor = '#f8ede2';
     },
     
     createShapes: function() {
@@ -147,7 +154,7 @@ var pjs = {
         /*
          * Circle 
          */
-        var circle = new Path.Circle(new Point(50, 90), 45);
+        var circle = new Path.Circle(new Point(55, 70), 45);
         circle.fillColor = '#FF7538';
         pjs.shapes[0] = new Shape(circle, 1);
         
@@ -155,10 +162,10 @@ var pjs = {
          * Heart
          */
         var heart = new Path();
-        heart.add(new Point(150, 130));
-        heart.add(new Point(190, 80));
-        heart.arcTo(new Point(150, 60), false);
-        heart.arcTo(new Point(110, 80), false);
+        heart.add(new Point(155, 110));
+        heart.add(new Point(195, 60));
+        heart.arcTo(new Point(155, 40), false);
+        heart.arcTo(new Point(115, 60), false);
         heart.closed = true;
         heart.fillColor = '#FFAACC';
         pjs.shapes[1] = new Shape(heart, 2);
@@ -166,14 +173,14 @@ var pjs = {
         /*
          * Triangle
          */
-        var triangle = new Path.RegularPolygon(new Point(240, 102), 3, 54);
+        var triangle = new Path.RegularPolygon(new Point(240, 82), 3, 54);
         triangle.fillColor = '#7851A9';
         pjs.shapes[2] = new Shape(triangle, 3);
 
         /*
          * Square
          */
-        var point = new Point(300, 50);
+        var point = new Point(300, 30);
         var size = new Size(80, 80);
         var rect = new Rectangle(point, size);
         var square = new Path.Rectangle(rect);
@@ -184,11 +191,11 @@ var pjs = {
          * House
          */
         var house = new Path();
-        house.add(new Point(400, 130));
-        house.add(new Point(480, 130));
-        house.add(new Point(480, 80));
-        house.add(new Point(440, 45));
-        house.add(new Point(400, 80));
+        house.add(new Point(400, 110));
+        house.add(new Point(480, 110));
+        house.add(new Point(480, 60));
+        house.add(new Point(440, 25));
+        house.add(new Point(400, 60));
         house.closed = true;
         house.fillColor = '#158078';
         pjs.shapes[4] = new Shape(house, 5);
@@ -197,12 +204,12 @@ var pjs = {
          * Hour glass
          */
         var hourglass = new Path();
-        hourglass.add(new Point(500, 130));
-        hourglass.add(new Point(580, 130));
-        hourglass.add(new Point(565, 85));
-        hourglass.add(new Point(580, 40));
-        hourglass.add(new Point(500, 40));
-        hourglass.add(new Point(515, 85));
+        hourglass.add(new Point(500, 110));
+        hourglass.add(new Point(580, 110));
+        hourglass.add(new Point(565, 65));
+        hourglass.add(new Point(580, 20));
+        hourglass.add(new Point(500, 20));
+        hourglass.add(new Point(515, 65));
         hourglass.closed = true;
         hourglass.fillColor = '#FCD975';
         pjs.shapes[5] = new Shape(hourglass, 6);
@@ -211,13 +218,13 @@ var pjs = {
          * Arrow
          */
         var arrow = new Path();
-        arrow.add(new Point(600, 110));
+        arrow.add(new Point(600, 90));
+        arrow.add(new Point(640, 90));
         arrow.add(new Point(640, 110));
-        arrow.add(new Point(640, 130));
-        arrow.add(new Point(680, 85));
+        arrow.add(new Point(680, 65));
+        arrow.add(new Point(640, 20));
         arrow.add(new Point(640, 40));
-        arrow.add(new Point(640, 60));
-        arrow.add(new Point(600, 60));
+        arrow.add(new Point(600, 40));
         arrow.closed = true;
         arrow.fillColor = '#5D76CB';
         pjs.shapes[6] = new Shape(arrow, 7);
@@ -225,7 +232,7 @@ var pjs = {
         /*
          * Octagon
          */
-        var octagon = new Path.RegularPolygon(new Point(740, 85), 8, 50);
+        var octagon = new Path.RegularPolygon(new Point(740, 65), 8, 50);
         octagon.fillColor = '#EE204D';
         pjs.shapes[7] = new Shape(octagon, 8);
 
@@ -233,16 +240,16 @@ var pjs = {
          * Shamrock
          */
         var shamrock = new Path();
-        shamrock.add(new Point(830, 130));
-        shamrock.add(new Point(850, 130));
-        shamrock.arcTo(new Point(860, 110));
-        shamrock.arcTo(new Point(880, 90), false);
-        shamrock.arcTo(new Point(860, 70), false);
-        shamrock.arcTo(new Point(840, 40), false);
-        shamrock.arcTo(new Point(820, 70), false);
-        shamrock.arcTo(new Point(800, 90), false);
-        shamrock.arcTo(new Point(820, 110), false);
-        shamrock.arcTo(new Point(830, 130));
+        shamrock.add(new Point(830, 110));
+        shamrock.add(new Point(850, 110));
+        shamrock.arcTo(new Point(860, 90));
+        shamrock.arcTo(new Point(880, 70), false);
+        shamrock.arcTo(new Point(860, 50), false);
+        shamrock.arcTo(new Point(840, 20), false);
+        shamrock.arcTo(new Point(820, 50), false);
+        shamrock.arcTo(new Point(800, 70), false);
+        shamrock.arcTo(new Point(820, 90), false);
+        shamrock.arcTo(new Point(830, 110));
         shamrock.closed = true;
         shamrock.fillColor = '#45CEA2';
         pjs.shapes[8] = new Shape(shamrock, 9);
@@ -250,9 +257,9 @@ var pjs = {
         /*
          * Star
          */
-        var star = new Path.Star(new Point(940, 85), 5, 30, 50);
+        var star = new Path.Star(new Point(940, 65), 5, 30, 50);
         star.rotate(36);
-        star.fillColor = '#FFF44F';
+        star.fillColor = '#fff425';
         pjs.shapes[9] = new Shape(star, 10);
         
         /*
@@ -274,18 +281,18 @@ var pjs = {
          * fulcrum
          */
         var fulcrum = new Path();
-        fulcrum.add(new Point(430, 670));
-        fulcrum.add(new Point(570, 670));
-        fulcrum.arcTo(new Point(525, 600), new Point(500, 500));
-        fulcrum.arcTo(new Point(475, 600), new Point(430, 670));
+        fulcrum.add(new Point(430, 650));
+        fulcrum.add(new Point(570, 650));
+        fulcrum.arcTo(new Point(525, 580), new Point(500, 480));
+        fulcrum.arcTo(new Point(475, 580), new Point(430, 650));
         fulcrum.fillColor = '#CD9575';
         
         /*
          * beam
          */
         var beam = new Path();
-        beam.add(new Point(250, 495));
-        beam.add(new Point(750, 495));
+        beam.add(new Point(250, 475));
+        beam.add(new Point(750, 475));
         beam.strokeColor = '#CD9575';
         beam.strokeWidth = 10;
         pjs.balance.beam = beam;
@@ -294,15 +301,15 @@ var pjs = {
          * left pan and post
          */
         var leftPanPost = new Path();
-        leftPanPost.add(new Point(250, 500));
-        leftPanPost.add(new Point(250, 450));
+        leftPanPost.add(new Point(250, 480));
+        leftPanPost.add(new Point(250, 430));
         leftPanPost.strokeColor = '#CD9575';
         leftPanPost.strokeWidth = 10;
         pjs.balance.leftPanPost = leftPanPost;
         
         var leftPan = new Path();
-        leftPan.add(new Point(25, 450));
-        leftPan.add(new Point(475, 450));
+        leftPan.add(new Point(25, 430));
+        leftPan.add(new Point(475, 430));
         leftPan.strokeColor = '#CD9575';
         leftPan.strokeWidth = 10;
         pjs.balance.leftPan = leftPan;
@@ -311,15 +318,15 @@ var pjs = {
          * right pan and post
          */
         var rightPanPost = new Path();
-        rightPanPost.add(new Point(750, 500));
-        rightPanPost.add(new Point(750, 450));
+        rightPanPost.add(new Point(750, 480));
+        rightPanPost.add(new Point(750, 430));
         rightPanPost.strokeColor = '#CD9575';
         rightPanPost.strokeWidth = 10;
         pjs.balance.rightPanPost = rightPanPost;
         
         var rightPan = new Path();
-        rightPan.add(new Point(700, 450));
-        rightPan.add(new Point(800, 450));
+        rightPan.add(new Point(700, 430));
+        rightPan.add(new Point(800, 430));
         rightPan.strokeColor = '#CD9575';
         rightPan.strokeWidth = 10;
         pjs.balance.rightPan = rightPan;    
@@ -454,9 +461,9 @@ var pjs = {
         /*
          * Remove any existing hooray group
          */
-        if (pjs.hooray) {
-            pjs.hooray.remove();
-        }
+        if (pjs.hooray && pjs.hooray.remove()) {
+            pjs.hooray = null;
+        };
         
         pjs.hooray = new Group();
         /*
@@ -501,6 +508,7 @@ var pjs = {
                 eqPos.x += s.bounds.width + 50; //eqPos.x += s.content.length * s.characterStyle.fontSize; 
                 
                 var miniShape = pjs.shapes[i].shapeItem.clone();
+                miniShape.fillColor = pjs.shapes[i].color;
                 miniShape.scale(0.33);
                 miniShape.position.x = eqPos.x + 5;
                 miniShape.position.y = eqPos.y - 7;
@@ -509,7 +517,7 @@ var pjs = {
                 eqPos.x += miniShape.bounds.width - 5;
                 
                 var miniText = pjs.shapes[i].text.clone();
-                miniText.scale(0.8);
+                miniText.scale(0.7);
                 miniText.paragraphStyle.justification = 'center';
                 miniText.position = miniShape.position + new Point(0, 5);
                 pjs.hooray.addChild(miniText);
@@ -539,18 +547,12 @@ var pjs = {
         tot.characterStyle.fontSize = 12;
         tot.content = ' = ' + pjs.total.total;
         pjs.hooray.addChild(tot);
-
-        pjs.hoorayDest = pjs.hoorayDest1;
         
         /*
          * always reset allowing animation
          */
         pjs.hoorayGo = true;
-        
-        for (var i = 0; i < pjs.balance.shapes.length; i++) {
-            pjs.hooray.moveAbove(pjs.balance.shapes[i].group);
-        }
-        
+
         ShapeEquate.playHooray();
     },
     
@@ -577,16 +579,17 @@ var pjs = {
         /*
          * Remove the hooray group
          */
-        if (pjs.hooray) {
-            pjs.hooray.remove();
+        if (pjs.hooray && pjs.hooray.remove()) {
             pjs.hooray = null;
         }
         /*
-         * reset all cloneCount
+         * reset all cloneCount and re-'enable' them all
          */
         for (var i = 0; i < pjs.shapes.length; i++) {
             pjs.shapes[i].cloneCount = 0;
+            pjs.shapes[i].enable();
         }
+        
     },
     
     newTotal: function() {
@@ -601,13 +604,104 @@ var pjs = {
         }
 
         pjs.clearPan();
+    },
+    
+    clearCloneFromPan: function() {
+        /*
+         * play sound effect
+         */
+        ShapeEquate.playRemove();
+        /*
+         * Remove clone
+         * from the pjs.balance.shapes and from the canvas
+         */
+        var spliceIndex = 0;
+        for (var j = 0; j < pjs.balance.shapes.length; j++) {
+            if (pjs.currClone === pjs.balance.shapes[j]) {
+                spliceIndex = j;
+                break;
+            }
+        }
+        pjs.balance.shapes.splice(j, 1);
+        /*
+         * decrement the clone count
+         */
+        pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount - 1;
+//        console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+        /*
+         * remove the clone from the canvas
+         */
+        pjs.currClone.group.remove();
+        /*
+         * reposition the balance
+         */
+        pjs.angleBeam();
+        pjs.positionClonesOnPan();              
+
+        /*
+         * If it is level 100 (can only be cloned 1x),
+         * then re-'enable' this shape
+         */
+        if (ShapeEquate.level === 100) {
+            pjs.currClone.clonedFrom.enable();
+        }
+        /*
+         * If it is level 200 (only one shape can have clones), 
+         * then 'enable' all shapes if the pan is empty
+         */
+        if (ShapeEquate.level === 200 && pjs.balance.shapes.length === 0) {
+            for (var i = 0; i < pjs.shapes.length; i++) {
+                pjs.shapes[i].enable();
+            }
+        }
+    },
+    
+    addCloneToPan: function() {
+        /*
+         * play sound effect
+         */
+        ShapeEquate.playAdd();
+        /*
+         * Drop the clone onto the pan
+         */
+        pjs.balance.shapes.push(pjs.currClone);
+        /*
+         * increment the clone count
+         */
+        pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount + 1; 
+//        console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+        
+        /*
+         * reposition the balance
+         */
+        pjs.angleBeam();            
+        pjs.positionClonesOnPan();
+        
+        /*
+         * If it is level 100 (can only be cloned 1x),
+         * then 'disable' this shape
+         */
+        if (ShapeEquate.level === 100) {
+            pjs.currClone.clonedFrom.disable();
+        }
+        /*
+         * If it is level 200 (only one shape can have clones), 
+         * then 'disable' all other shapes
+         */
+        if (ShapeEquate.level === 200) {
+            for (var i = 0; i < pjs.shapes.length; i++) {
+                if (pjs.currClone.clonedFrom !== pjs.shapes[i]) {
+                    pjs.shapes[i].disable();
+                }
+            }
+        }
     }
 
 };
  
 
 function onMouseDown(event) {
-//  var hitResult = project.hitTest(event.point, hitOptions);
+
 	var hitResult = project.hitTest(event.point);
     if (hitResult && hitResult.item) {
 
@@ -615,9 +709,17 @@ function onMouseDown(event) {
 
             if (pjs.shapes[i].shapeItem === hitResult.item) {
                 /*
+                 * Remove hooray in case
+                 * still playing after success hooray
+                 */
+                if (pjs.hooray && pjs.hooray.remove()) {
+                    pjs.hooray = null;
+                }
+
+                /*
                  * If it's a shape, clone it...
                  */
-//                console.log("cloneCount is " + pjs.shapes[i].cloneCount);
+                console.log("cloneCount is " + pjs.shapes[i].cloneCount);
                 /*
                  * ... unless it is level 100 (can only be cloned 1x) and already has a clone
                  */
@@ -634,7 +736,7 @@ function onMouseDown(event) {
                     return;
                 }
                 
-//                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
+                console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
                 /*
                  * Make clone and create a new shape
                  */
@@ -655,43 +757,39 @@ function onMouseDown(event) {
                  */
                 pjs.removeClone = false;
 
-                /*
-                 * Remove hooray in case
-                 * still playing after success hooray
-                 */
-                if (pjs.hooray) {
-                    pjs.hooray.remove();
-                    pjs.hooray = null;
-                }
-
                 return;
             }
         }
 	    
         for (var i = 0; i < pjs.balance.shapes.length; i++) {
             if (pjs.balance.shapes[i].shapeItem === hitResult.item) {
-//                console.log("isClone so marking removeClone = true");
-                pjs.currClone = pjs.balance.shapes[i];
-                pjs.currClone.shapeItem.selected = true;
-                
-                pjs.removeClone = true;
-                
                 /*
                  * Remove hooray in case
                  * still playing after success hooray
                  */
-                if (pjs.hooray) {
-                    pjs.hooray.remove();
+                if (pjs.hooray && pjs.hooray.remove()) {
                     pjs.hooray = null;
                 }
-
+                
+                /*
+                 * mark the clone to be removed
+                 */
+                pjs.currClone = pjs.balance.shapes[i];
+                pjs.currClone.shapeItem.selected = true;
+                
+                pjs.removeClone = true;
+   
                 return;
             }            
         }
         /*
-         * If it's the hooray container, toggle animation
+         * If it's the hooray container, stop animation, or
+         * if already stopped, then, remove
          */
         if (pjs.hooray && pjs.hooray.firstChild === hitResult.item) {
+            if (!pjs.hoorayGo && pjs.hooray.remove()) {
+                pjs.hooray = null;
+            }
             pjs.hoorayGo = !pjs.hoorayGo;
         }
 	}
@@ -711,57 +809,9 @@ function onMouseDrag(event) {
 function onMouseUp(event) {
     if (pjs.currClone) {
         if (pjs.removeClone) {
-            /*
-             * play sound effect
-             */
-            ShapeEquate.playRemove();
-            /*
-             * Remove clone
-             * from the pjs.balance.shapes and from the canvas
-             */
-            var spliceIndex = 0;
-            for (var j = 0; j < pjs.balance.shapes.length; j++) {
-                if (pjs.currClone === pjs.balance.shapes[j]) {
-                    spliceIndex = j;
-                    break;
-                }
-            }
-            pjs.balance.shapes.splice(j, 1);
-            /*
-             * decrement the clone count
-             */
-            pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount - 1;
-//            console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
-            /*
-             * remove the clone from the canvas
-             */
-            pjs.currClone.group.remove();
-            /*
-             * reposition the balance
-             */
-            pjs.angleBeam();
-            pjs.positionClonesOnPan();              
-
+            pjs.clearCloneFromPan();
         } else {
-            /*
-             * play sound effect
-             */
-            ShapeEquate.playAdd();
-            /*
-             * Drop the clone onto the pan
-             */
-            pjs.balance.shapes.push(pjs.currClone);
-            /*
-             * increment the clone count
-             */
-            pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount + 1; 
-//            console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
-            
-            /*
-             * reposition the balance
-             */
-            pjs.angleBeam();            
-            pjs.positionClonesOnPan();
+            pjs.addCloneToPan();
         }
         
         /*
@@ -773,26 +823,22 @@ function onMouseUp(event) {
 }
 
 function onFrame(event) {
-    if (pjs.hooray && pjs.hoorayDest && pjs.hoorayGo) {
+    if (pjs.hooray && pjs.hoorayGo) {
         /*
-         * Animate moving the hooray message around
+         * Animate moving the hooray message up
          */
-        // Each frame, move the path 1/30th of the difference in position
-        // between it and the destination.
-        
-        // The vector is the difference between the position of
-        // the hooray container and the destination point:
         var vector = pjs.hoorayDest - pjs.hooray.firstChild.position;
+                
+        /*
+         * The closer it gets, the smaller the vector, so it slows down 
+         */
+        pjs.hooray.position += vector / 25;
         
-        // We add 1/30th of the vector to the position property
-        // of the text item, to move it in the direction of the
-        // destination point:
-        pjs.hooray.position += vector / 30;
-        
-        // If the distance between the path and the destination is less
-        // than 5, we let it bounce back to the other direction
+        /*
+         * When alost there, stop
+         */
         if (vector.length < 5) {
-            pjs.hoorayDest = pjs.hoorayDest === pjs.hoorayDest1 ? pjs.hoorayDest2 : pjs.hoorayDest1;
+            pjs.hoorayGo = false;
         }        
     }
 }

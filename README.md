@@ -12,15 +12,15 @@ How to play
 
 How to play again
 --------------------------------------
-* To try to create a different equation with the same total, you may click the "Clear my pan" button, or you may continue to add and/or remove shapes.
+* To try to create a different equation with the same total, you may click the "Clear" button, or you may continue to add and/or remove shapes.
 * To play again with a different total, click the "New total" button.
 * You may also play again by changing the level.
 
 Levels
 --------------------------------------
-* Beginner - the total will be between 1 and 20, inclusive
-* Intermediate - the total will be between 21 and 40, inclusive
-* Advanced - the total will be between 41 and 60, inclusive
+* Beginner - the total will be between 1 and 20, inclusive.
+* Intermediate - the total will be between 21 and 40, inclusive.
+* Advanced - the total will be between 41 and 60, inclusive.
 * Expert challenges
    * Any shape once - the total will be between 1 and 55, inclusive.  You may select any shape, but each shape can only be placed on the pan once.
    * One shape multiples - the total will be a product (composite number aka no primes) between 2 and 60, inclusive.  You may select a single shape any number of times, and you may not select any other shape.
