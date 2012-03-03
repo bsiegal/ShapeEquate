@@ -35,6 +35,10 @@ button/*, select, select > option*/ {
     top: 0px;
 }
 
+#title .rightMenu {
+    top: 4px;
+}
+
 #about {
     position: absolute;
     right: 0px;
@@ -53,6 +57,9 @@ button/*, select, select > option*/ {
 }
 
 h1 {
-    margin-top: 0px;
-    
+    margin-top: 0px;   
 }
+
+a {
+    text-decoration: none;
+    font-style: italic;
