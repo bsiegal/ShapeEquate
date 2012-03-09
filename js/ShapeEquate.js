@@ -31,7 +31,7 @@ var ShapeEquate = {
     
     playSound: function(file) {
         if ((navigator.userAgent.match(/iPhone/i)) || 
-                (navigator.userAgent.match(/iPod/i))) {
+                (navigator.userAgent.match(/iPad/i))) {
             /*
              * Sound is too slow on iPad.
              * From https://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/ControllingMediaWithJavaScript/ControllingMediaWithJavaScript.html --
