@@ -1,3 +1,7 @@
+html {
+    background-color: #EEEFFF;
+}
+
 #container {
     font-size: 14px;
     width: 1000px;
@@ -23,6 +27,11 @@
 
 #ShapeEquateCanvas {
     /* border: 1px solid lightgray; */
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 4px;
 }
     
 button/*, select, select > option*/ {

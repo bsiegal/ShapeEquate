@@ -128,8 +128,8 @@ var pjs = {
         /*
          * rectangle area for the shape bank
          */
-        var point = new Point(0, 5);
-        var size = new Size(1000, 125);
+        var point = new Point(5, 5);
+        var size = new Size(990, 125);
         var rect = new Rectangle(point, size);
         var bank = new Path.RoundRectangle(rect, 10);
         bank.strokeColor = '#d5b99e';
