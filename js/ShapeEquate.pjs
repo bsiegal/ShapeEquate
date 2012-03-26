@@ -342,7 +342,7 @@ var pjs = {
         pjs.total.fillColor = 'black';
         pjs.total.characterStyle.fontSize = 30;
         
-//        if (console && console.log) console.log("ShapeEquate.level = " + ShapeEquate.level);
+//        pjs.consoleLog("ShapeEquate.level = " + ShapeEquate.level);
         var num = ShapeEquate.total ? ShapeEquate.total : 
             /* random int between (1 and 20) or (21 and 40) or (41 and 60), inclusive */ 
             ShapeEquate.level >= 0 && ShapeEquate.level <= 2 ? Math.floor(Math.random() * 20) + ShapeEquate.level * 20 + 1 :
@@ -533,7 +533,7 @@ var pjs = {
         }
         debugEq = debugEq.substring(0, debugEq.length - 1);
         debugEq = debugEq + " = " + pjs.total.total;
-        if (console && console.log) console.log("You did it! " + debugEq);
+        pjs.consoleLog("You did it! " + debugEq);
         /*
          * remove the last + 
          */
@@ -627,7 +627,7 @@ var pjs = {
          * decrement the clone count
          */
         pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount - 1;
-//        if (console && console.log) console.log("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+//        pjs.consoleLog("decrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
         /*
          * remove the clone from the canvas
          */
@@ -669,7 +669,7 @@ var pjs = {
          * increment the clone count
          */
         pjs.currClone.clonedFrom.cloneCount = pjs.currClone.clonedFrom.cloneCount + 1; 
-//        if (console && console.log) console.log("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
+//        pjs.consoleLog("incrementing cloneCount to " + pjs.currClone.clonedFrom.cloneCount);
         
         /*
          * reposition the balance
@@ -695,6 +695,12 @@ var pjs = {
                 }
             }
         }
+    },
+    
+    consoleLog: function(msg) {
+        if (console && console.log) {
+            console.log(msg);
+        }
     }
 
 };
@@ -719,7 +725,7 @@ function onMouseDown(event) {
                 /*
                  * If it's a shape, clone it...
                  */
-                if (console && console.log) console.log("cloneCount is " + pjs.shapes[i].cloneCount);
+                pjs.consoleLog("cloneCount is " + pjs.shapes[i].cloneCount);
                 /*
                  * ... unless it is level 100 (can only be cloned 1x) and already has a clone
                  */
@@ -736,7 +742,7 @@ function onMouseDown(event) {
                     return;
                 }
                 
-                if (console && console.log) console.log("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
+                pjs.consoleLog("pjs.shapes[i].shapeItem === hitResult.item, so cloning...");
                 /*
                  * Make clone and create a new shape
                  */
