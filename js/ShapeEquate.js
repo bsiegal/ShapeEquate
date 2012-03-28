@@ -96,4 +96,7 @@ $(function() {
         }
     });
 
+    if ($(window).height() < 400) {
+        $('html,body').animate({scrollTop: $('#title').offset().top}, 'fast');
+    }
 });
