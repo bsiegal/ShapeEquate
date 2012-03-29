@@ -17,6 +17,8 @@
  ******************************************************************************/
 
 var ShapeEquate = {
+    debug: false,
+    
     level: 0, /* default level */
     
     draw: function() {

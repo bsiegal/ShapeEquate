@@ -698,7 +698,7 @@ var pjs = {
     },
     
     consoleLog: function(msg) {
-        if (console && console.log) {
+        if (ShapeEquate.debug && console && console.log) {
             console.log(msg);
         }
     }
