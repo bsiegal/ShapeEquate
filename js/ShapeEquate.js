@@ -55,23 +55,23 @@ var ShapeEquate = {
     },
     
     playHooray: function() {
-        ShapeEquate.playSound('yipee.wav');
+        ShapeEquate.playSound('seHooray.wav');
     },
  
     playOops: function() {
-        ShapeEquate.playSound('peeeooop_x.wav');
+        ShapeEquate.playSound('seOops.wav');
     },
     
     playAdd: function() {
-        ShapeEquate.playSound('chime_up.wav');
+        ShapeEquate.playSound('seAdd.wav');
     },
     
     playRemove: function() {
-        ShapeEquate.playSound('chime_down.wav');
+        ShapeEquate.playSound('seRemove.wav');
     },
     
     playInvalid: function() {
-        ShapeEquate.playSound('blip.wav');
+        ShapeEquate.playSound('seInvalid.wav');
     },
     
     about: function(show) {
